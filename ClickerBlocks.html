@@ -1,0 +1,176 @@
+<html>
+<head>
+<style>
+*{padding: 0; margin:0;}
+canvas{ background: #eee; display: block; margin: 0 auto;}
+</style>
+</head>
+
+
+
+<body>
+<canvas id= "myCanvas" width="800" height="600"></canvas>
+<script type="text/javascript">
+let canvas = document.getElementById("myCanvas");
+let ctx = canvas.getContext("2d");
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+canvas.addEventListener("mousedown", getPosition, false);
+let fps = 60;
+let mainScreenLoad = false;
+let circleR = 0;
+let circleG = 0;
+let circleB = 0;
+let hexadecimal = "";
+let isRgbShown = false;
+let isHexShown = false;
+let colorList = [
+	["Red", 255, 0, 0, "#ff0000"],
+	["Green", 0, 255, 0,"#00ff00"],
+	["Blue", 0, 0, 255, "#0000ff"]
+];
+
+function getPosition(event)
+{
+	x = event.x - canvas.offsetLeft;
+	y = event.y - canvas.offsetTop;
+	collision(x,y);
+}
+
+ 
+function collision(x1, y1) //Detects when the buttons are pressed.
+{
+	if(x1 >= 175 && x1 <= 375 &&
+	y1 >= 150 && y1 <= 350)
+	{
+		circleR = colorList[0][1];
+		circleG = colorList[0][2];
+		circleB = colorList[0][3];
+		hexadecimal = colorList[0][4];
+	}
+	if(x1 >= 175 && x1 <= 375 &&
+	y1 >= 375 && y1 <= 575)
+	{
+		circleR = colorList[1][1];
+		circleG = colorList[1][2];
+		circleB = colorList[1][3];
+		hexadecimal = colorList[1][4];
+	}
+	if(x1 >= 425 && x1 <= 625 &&
+	y1 >= 150 && y1 <= 350)
+	{
+		circleR = colorList[2][1];
+		circleG = colorList[2][2];
+		circleB = colorList[2][3];
+		hexadecimal = colorList[2][4];
+	}
+	if(x1 >= 425 && x1 <= 625 &&
+	y1 >= 375 && y1 <= 450)
+	{
+		isRgbShown = !isRgbShown;
+	}
+	if(x1 >= 425 && x1 <= 625 &&
+	y1 >= 475 && y1 <= 550)
+	{
+		isHexShown = !isHexShown;
+	}
+}
+ 
+//Draws circle for currently selected color. 
+function drawCircle()
+{
+	ctx.fillStyle = "rgb(" + circleR + "," + circleG + "," + circleB + ")";
+    ctx.beginPath();
+    ctx.arc(400, 75, 50, 0, 2*Math.PI);
+    ctx.closePath();
+    ctx.fill();
+}
+
+//Draws Original Selection Screen
+function drawScreen()
+{
+	//Placement(x1, x2, y1, y2)
+	ctx.fillStyle = "rgb(255,0,0)";
+	ctx.fillRect(175, 150, 200, 200);
+	
+	ctx.fillStyle = "rgb(0,255,0)";
+	ctx.fillRect(175, 375, 200, 200);
+		
+	ctx.fillStyle = "rgb(0,0,255)";
+	ctx.fillRect(425, 150, 200, 200);
+	
+	ctx.fillStyle = "rgb(192,192,192)";
+	ctx.fillRect(425, 375, 200, 75);
+	ctx.fillRect(425, 475, 200, 75);
+	ctx.fillStyle = "rgb(0,0,0)";
+	
+	ctx.font = "25px Ariel";
+	if(isRgbShown == true) //Shows RGB value
+	{
+		ctx.fillText("RGB: " + circleR + ", " + circleG + ", " + circleB , 425, 420, 200, 200);
+	}
+	else
+	{
+		ctx.fillText("Click to show RGB values.", 425, 420, 200, 200);
+	}
+	if(isHexShown == true) //Shows Hexidecimal value
+	{
+		ctx.fillText("Hexidecimal: " + hexadecimal , 425, 525, 200, 200);
+	}
+	else
+	{
+		ctx.fillText("Click to show Hexidecimal value.", 425, 525, 200, 200);
+	}
+	
+	drawCircle();
+}
+
+//Checks if Mouse key is up.
+function getMouseDown(e)
+{
+	mouseIsDown = true;
+}
+
+function getMouseUp(e)
+{
+	mouseIsDown = false;
+}
+
+function keyDownHandler(e){
+	if(e.keyCode == 37)
+	{
+		leftPressed = true;
+		rightPressed = false;
+	}
+	else if(e.keyCode == 39)
+	{
+		rightPressed = true;
+		leftPressed = false;
+	}
+}
+
+function keyUpHandler(e){
+	if(e.keyCode == 37)
+	{
+		leftPressed = false;
+	}
+	if(e.keyCode == 39)
+	{
+		rightPressed = false;
+	}
+}
+
+
+function draw(){
+    setTimeout(function() {
+    requestAnimationFrame(draw);
+    ctx.clearRect(0,0,800,600);
+	drawScreen();
+	
+    }, 1000/fps);
+}
+draw();
+ 
+</script>
+</body>
+</html>
